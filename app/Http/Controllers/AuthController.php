@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -34,16 +37,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
-    {
-        return response()->json(auth()->user());
-    }
-
-    /**
      * Log the user out (Invalidate the token).
      *
      * @return \Illuminate\Http\JsonResponse
@@ -54,7 +47,7 @@ class AuthController extends Controller
 
         $response = response()->json(['message' => 'Successfully logged out']);
         $response->withCookie(cookie('access_token', '', -1, null, null, false, true));
-    
+
         return $response;
     }
 
@@ -70,10 +63,10 @@ class AuthController extends Controller
         $minutes = auth()->factory()->getTTL();
         $response = response()->json([
             'token_type' => 'bearer',
-            'expires_in' => $minutes *  60
+            'expires_in' => $minutes * 60
         ]);
         $response->withCookie(cookie('access_token', $newToken, $minutes, null, null, false, true));
-    
+
         return $response;
     }
 
@@ -94,5 +87,15 @@ class AuthController extends Controller
         $response->withCookie(cookie('access_token', $token, $minutes, null, null, false, true));
 
         return $response;
+    }
+
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        return response()->json(auth()->user());
     }
 }
