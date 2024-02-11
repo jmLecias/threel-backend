@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -17,17 +18,45 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
+
+    public function register(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|string|email|max:255|unique:users',
+                'username' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+                'password_confirmation' => 'required|string|min:8'
+            ]);
+
+            User::create([
+                'name' => 'test name',
+                'email' => $request->input('email'),
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->input('password')),
+            ]);
+
+            $credentials = $request->only('email', 'password');
+            $token = auth()->attempt($credentials);
+
+            return $this->respondWithToken($token);
+        } catch (ValidationException $e) {
+            $errors = $e->errors();
+            return response()->json(['errors' => $errors], 422);
+        }
+    }
+
 
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only('email', 'password');
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
