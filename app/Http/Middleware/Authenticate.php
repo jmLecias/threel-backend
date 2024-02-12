@@ -12,6 +12,7 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
+        //Do authentication here, check if token is valid
         return $request->expectsJson() ? null : null;
     }
 }

@@ -25,14 +25,15 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
+                'name' => 'required|string|max:100',
                 'email' => 'required|string|email|max:255|unique:users',
-                'username' => 'required|string|max:255|unique:users',
+                'username' => 'required|string|max:25|unique:users',
                 'password' => 'required|string|min:8|confirmed',
                 'password_confirmation' => 'required|string|min:8'
             ]);
 
             User::create([
-                'name' => 'test name',
+                'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'username' => $request->input('username'),
                 'password' => Hash::make($request->input('password')),
@@ -55,11 +56,11 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
-    {
+    {   
         $credentials = $request->only('email', 'password');
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['errors' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
