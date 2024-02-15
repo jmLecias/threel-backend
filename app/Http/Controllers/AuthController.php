@@ -81,7 +81,6 @@ class AuthController extends Controller
         auth()->logout();
 
         $response = response()->json(['message' => 'Successfully logged out']);
-        $response->withCookie(cookie('access_token', '', -1, null, null, false, true));
 
         return $response;
     }
@@ -98,9 +97,9 @@ class AuthController extends Controller
         $minutes = auth()->factory()->getTTL();
         $response = response()->json([
             'token_type' => 'bearer',
-            'expires_in' => $minutes * 60
+            'expires_in' => $minutes * 60,
+            'access_token' => $newToken,
         ]);
-        $response->withCookie(cookie('access_token', $newToken, $minutes, null, null, false, true));
 
         return $response;
     }
@@ -117,9 +116,9 @@ class AuthController extends Controller
         $minutes = auth()->factory()->getTTL();
         $response = response()->json([
             'token_type' => 'bearer',
-            'expires_in' => $minutes * 60
+            'expires_in' => $minutes * 60,
+            'access_token' => $token,
         ]);
-        $response->withCookie(cookie('access_token', $token, $minutes, null, null, false, true));
 
         return $response;
     }
