@@ -12,16 +12,6 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    // }
-
-    /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -93,15 +83,7 @@ class AuthController extends Controller
     public function refresh()
     {
         $newToken = auth()->refresh();
-
-        $minutes = auth()->factory()->getTTL();
-        $response = response()->json([
-            'token_type' => 'bearer',
-            'expires_in' => $minutes * 60,
-            'access_token' => $newToken,
-        ]);
-
-        return $response;
+        return  $this->respondWithToken($newToken);
     }
 
     /**
@@ -118,6 +100,7 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => $minutes * 60,
             'access_token' => $token,
+            'user' => $this->me(),
         ]);
 
         return $response;
