@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -27,7 +26,7 @@ class AuthController extends Controller
                 'password_confirmation' => 'required|string|min:8'
             ]);
 
-            User::create([
+            $user = User::create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'username' => $request->input('username'),
@@ -36,6 +35,8 @@ class AuthController extends Controller
 
             $credentials = $request->only('email', 'password');
             $token = auth()->attempt($credentials);
+
+            $user->sendVerificationEmail();
 
             return $this->respondWithToken($token);
         } catch (ValidationException $e) {
