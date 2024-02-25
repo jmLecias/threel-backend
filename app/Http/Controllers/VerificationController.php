@@ -11,27 +11,35 @@ use Exception;
 
 class VerificationController extends Controller
 {
+    protected $redirectUrl;
+
+    // Constructor to initialize $redirectUrl
+    public function __construct()
+    {
+        $this->redirectUrl = env('VERIFICATION_REDIRECT');
+    }
+
     /**
      * Verify email from url.
      *
      */
     public function verify(Request $request, $id)
     {
-        $redirectUrl = env('VERIFICATION_SUCCESS_URL');
-
         try {
             $user = User::findOrFail($id);
 
             if($user->email_verified_at != null) {
-                return redirect($redirectUrl)->with('status', 'Email already verified!');
+
+                // return response()->json(['status' => 'Successfully logged out']);
+                return redirect($this->redirectUrl . 'already_verified');
             } else {
                 $user->email_verified_at = now();
                 $user->save();
                 // should response JSONResponse
-                return redirect($redirectUrl)->with('status', 'Your email has been verified!');
+                return redirect($this->redirectUrl . 'verification_success');
             }
         } catch (Exception $e) {
-            return redirect($redirectUrl)->with('status', 'Email verification error!');
+            return redirect($this->redirectUrl . 'verification_error');
         }
     }
     /**
@@ -41,20 +49,18 @@ class VerificationController extends Controller
      */
     public function send(Request $request)
     {
-        $redirectUrl = env('VERIFICATION_SUCCESS_URL');
-
         try {
             $user = User::findOrFail($request->input('id'));
 
             if($user->email_verified_at != null) {
-                return redirect($redirectUrl)->with('status', 'Email already verified!');
+                return redirect($this->redirectUrl)->with('status', 'already_verified');
             } else {
                 $user->sendVerificationEmail();
                 // should response JSONResponse
-                return redirect($redirectUrl)->with('status', 'Please check your email for verification.');
+                return redirect($this->redirectUrl)->with('status', 'verification_sent');
             }
         } catch (Exception $e) {
-            return redirect($redirectUrl)->with('status', 'Error in sending verification email!');
+            return redirect($this->redirectUrl)->with('status', 'verification_error');
         }
     }
 }
