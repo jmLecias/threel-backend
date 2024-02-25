@@ -23,7 +23,8 @@ class AuthController extends Controller
                 'email' => 'required|string|email|max:255|unique:users',
                 'username' => 'required|string|max:25|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'password_confirmation' => 'required|string|min:8'
+                'password_confirmation' => 'required|string|min:8',
+                'account_type' => 'required|string',
             ]);
 
             $user = User::create([
@@ -31,6 +32,7 @@ class AuthController extends Controller
                 'email' => $request->input('email'),
                 'username' => $request->input('username'),
                 'password' => Hash::make($request->input('password')),
+                'user_type' => $request->input('account_type')
             ]);
 
             $credentials = $request->only('email', 'password');
