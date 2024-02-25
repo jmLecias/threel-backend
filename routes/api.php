@@ -33,11 +33,10 @@ Route::middleware('api')->group(function () {
     Route::post('/register', 'App\Http\Controllers\AuthController@register')
         ->name('register');
 });
-
-
 Route::group(['prefix' => 'email', 'as' => 'verification.'], function () {
     Route::get('/verify/{id}', 'App\Http\Controllers\VerificationController@verify')
         ->middleware(['signed'])->name('verify');
     Route::post('/send-verification', 'App\Http\Controllers\VerificationController@send')
         ->name('send');
 });
+

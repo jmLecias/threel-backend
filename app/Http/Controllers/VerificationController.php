@@ -29,13 +29,10 @@ class VerificationController extends Controller
             $user = User::findOrFail($id);
 
             if($user->email_verified_at != null) {
-
-                // return response()->json(['status' => 'Successfully logged out']);
                 return redirect($this->redirectUrl . 'already_verified');
             } else {
                 $user->email_verified_at = now();
                 $user->save();
-                // should response JSONResponse
                 return redirect($this->redirectUrl . 'verification_success');
             }
         } catch (Exception $e) {
@@ -53,14 +50,13 @@ class VerificationController extends Controller
             $user = User::findOrFail($request->input('id'));
 
             if($user->email_verified_at != null) {
-                return redirect($this->redirectUrl)->with('status', 'already_verified');
+                return response()->json(['status' => 'Email address was already verified!']);;
             } else {
                 $user->sendVerificationEmail();
-                // should response JSONResponse
-                return redirect($this->redirectUrl)->with('status', 'verification_sent');
+                return response()->json(['status' => 'Email address resent successfully!']);
             }
         } catch (Exception $e) {
-            return redirect($this->redirectUrl)->with('status', 'verification_error');
+            return response()->json(['status' => 'Error while sending verification email.']);
         }
     }
 }

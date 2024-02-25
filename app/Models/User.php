@@ -59,7 +59,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function sendVerificationEmail() {
-        $minutes = 5;
+        $minutes = 60;
         $url = URL::temporarySignedRoute(
             'verification.verify',  
             now()->addMinutes($minutes),  
