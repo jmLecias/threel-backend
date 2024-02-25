@@ -32,6 +32,12 @@ Route::middleware('api')->group(function () {
         ->name('login');
     Route::post('/register', 'App\Http\Controllers\AuthController@register')
         ->name('register');
+    Route::post('/display', 'App\Http\Controllers\DataController@artistDisplay');
+    Route::post('/display-banned-artist', 'App\Http\Controllers\DataController@displayBannedArtist');
+    Route::post('/display-not-verified-artist', 'App\Http\Controllers\DataController@displayNotVerifiedArtist');
+    Route::post('/ban-artist/{id}', 'App\Http\Controllers\DataController@banArtist');
+    Route::post('/restore-artist/{id}', 'App\Http\Controllers\DataController@restoreArtist');
+    Route::post('/verify-artist/{id}', 'App\Http\Controllers\DataController@verifyArtist');
 });
 Route::group(['prefix' => 'email', 'as' => 'verification.'], function () {
     Route::get('/verify/{id}', 'App\Http\Controllers\VerificationController@verify')

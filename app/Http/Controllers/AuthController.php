@@ -32,7 +32,10 @@ class AuthController extends Controller
                 'email' => $request->input('email'),
                 'username' => $request->input('username'),
                 'password' => Hash::make($request->input('password')),
-                'user_type' => $request->input('account_type')
+                'user_type' => $request->input('account_type'),
+                'is_banned' => 0,
+                'artist_verified_at' => null,
+
             ]);
 
             $credentials = $request->only('email', 'password');
