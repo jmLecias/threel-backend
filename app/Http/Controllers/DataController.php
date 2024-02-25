@@ -12,7 +12,6 @@ class DataController extends Controller
         $artists = User::where('user_type', 'artist')->where('is_banned', false)->get();
 
         return response()->json(['artists' => $artists]);
-        return view('artist.display', ['artists' => $artists]);
     }
 
     public function banArtist($id) {
@@ -27,14 +26,12 @@ class DataController extends Controller
         $banned_artists = User::where('user_type', 'artist')->where('is_banned', true)->get();
 
         return response()->json(['banned_artists' => $banned_artists]);
-        return view('banned_artist.display', ['banned_artists' => $banned_artists]);
     }
 
     public function displayNotVerifiedArtist() {
-        $nverified_artists = User::whereNull('artist_verified_at')->get();
+        $nverified_artists = User::whereNull('artist_verified_at')->where('user_type', 'artist')->get();
 
         return response()->json(['nverified_artists' => $nverified_artists]);
-        return view('nverified_artist.display', ['nverified_artists' => $nverified_artists]);
     }
 
     public function restoreArtist($id) {
