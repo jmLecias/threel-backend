@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class DataController extends Controller
 {
     public function artistDisplay() {
-        $artists = User::where('user_type', 'artist')->where('is_banned', false)->get();
+        $artists = User::all();
 
         return response()->json(['artists' => $artists]);
     }
