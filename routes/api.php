@@ -21,17 +21,16 @@ use App\Models\User;
 // Route::middleware('auth:sanctum')->group( function () {
 // });
 
-Route::middleware('jwt.verify')->group(function () {
-    Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
+Route::middleware('auth.jwt')->group(function () {
     Route::post('/refresh', 'App\Http\Controllers\AuthController@refresh');
     Route::post('/me', 'App\Http\Controllers\AuthController@me');
+    Route::post('/logout', 'App\Http\Controllers\AuthController@logout')->name('logout');
 });
 
 Route::middleware('api')->group(function () {
-    Route::post('/login', 'App\Http\Controllers\AuthController@login')
-        ->name('login');
-    Route::post('/register', 'App\Http\Controllers\AuthController@register')
-        ->name('register');
+    Route::post('/login', 'App\Http\Controllers\AuthController@login')->name('login');
+    Route::post('/register', 'App\Http\Controllers\AuthController@register')->name('register');
+    
     Route::post('/display', 'App\Http\Controllers\DataController@artistDisplay');
     Route::post('/display-banned-artist', 'App\Http\Controllers\DataController@displayBannedArtist');
     Route::post('/display-not-verified-artist', 'App\Http\Controllers\DataController@displayNotVerifiedArtist');

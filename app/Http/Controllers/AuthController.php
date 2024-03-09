@@ -38,12 +38,12 @@ class AuthController extends Controller
 
             ]);
 
-            $credentials = $request->only('email', 'password');
-            $token = auth()->attempt($credentials);
+            // $credentials = $request->only('email', 'password');
+            // $token = auth()->attempt($credentials);
 
             $user->sendVerificationEmail();
 
-            return $this->respondWithToken($token);
+            return $this->login($request);
         } catch (ValidationException $e) {
             $errors = $e->errors();
             return response()->json(['errors' => $errors], 422);
@@ -57,14 +57,14 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
-    {   
+    {
         $credentials = $request->only('email', 'password');
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['errors' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        return $this->refresh();
     }
 
     /**
@@ -89,7 +89,7 @@ class AuthController extends Controller
     public function refresh()
     {
         $newToken = auth()->refresh();
-        return  $this->respondWithToken($newToken);
+        return $this->respondWithToken($newToken);
     }
 
     /**
@@ -102,11 +102,13 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $minutes = auth()->factory()->getTTL();
+        // Print the TTL value to see how long the token is valid
+        info("Token TTL: {$minutes} minutes");
         $response = response()->json([
             'token_type' => 'bearer',
-            'expires_in' => $minutes * 60,
+            'expires_in' => $minutes * 60,  
             'access_token' => $token,
-            'user' => $this->me(),
+            'user' => auth()->user(),
         ]);
 
         return $response;
@@ -115,9 +117,14 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
+     *  @return \Illuminate\Http\JsonResponse
      */
     public function me()
     {
-        return auth()->user();
+        $response = response()->json([
+            'is_valid' => auth()->check(),
+            'user' => auth()->user(),
+        ]);
+        return $response;
     }
 }
