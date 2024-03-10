@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Models\Upload;
+use App\Jobs\UploadJob;
 
 class UploadController extends Controller
 {
@@ -28,7 +30,13 @@ class UploadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            UploadJob::dispatch($request);
+
+            return response()->json(['message' => 'Upload is being processed..']);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
     }
 
     /**

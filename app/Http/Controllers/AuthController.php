@@ -32,21 +32,13 @@ class AuthController extends Controller
                 'email' => $request->input('email'),
                 'username' => $request->input('username'),
                 'password' => Hash::make($request->input('password')),
-                'user_type' => $request->input('account_type'),
-                'is_banned' => 0,
-                'artist_verified_at' => null,
-
             ]);
-
-            // $credentials = $request->only('email', 'password');
-            // $token = auth()->attempt($credentials);
 
             $user->sendVerificationEmail();
 
             return $this->login($request);
         } catch (ValidationException $e) {
-            $errors = $e->errors();
-            return response()->json(['errors' => $errors], 422);
+            return response()->json(['errors' => $e->errors()], 422);
         }
     }
 
@@ -93,6 +85,20 @@ class AuthController extends Controller
     }
 
     /**
+     * Get the authenticated User.
+     *
+     *  @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        $response = response()->json([
+            'is_valid' => auth()->check(),
+            'user' => auth()->user(),
+        ]);
+        return $response;
+    }
+
+    /**
      * Get the token array structure.
      *
      * @param  string $token
@@ -106,25 +112,11 @@ class AuthController extends Controller
         info("Token TTL: {$minutes} minutes");
         $response = response()->json([
             'token_type' => 'bearer',
-            'expires_in' => $minutes * 60,  
+            'expires_in' => $minutes * 60,
             'access_token' => $token,
             'user' => auth()->user(),
         ]);
 
-        return $response;
-    }
-
-    /**
-     * Get the authenticated User.
-     *
-     *  @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
-    {
-        $response = response()->json([
-            'is_valid' => auth()->check(),
-            'user' => auth()->user(),
-        ]);
         return $response;
     }
 }

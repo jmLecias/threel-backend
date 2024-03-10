@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_banned')->nullable();
+        Schema::create('status_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('status_type');
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_banned');
-        });
+        Schema::dropIfExists('status_types');
     }
 };

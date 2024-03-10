@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Upload extends Model
+class StatusType extends Model
 {
     use HasFactory;
-    protected $table = 'uploads';
+
+    protected $table = 'status_types';
 
     /**
      * The attributes that are mass assignable.
@@ -16,17 +17,11 @@ class Upload extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'title',
-        'description',
-        'content',
-        'thumbnail',
-        'upload_type',
+        'status_type'
     ];
 
-    public function uploadType()
+    public function users()
     {
-        return $this->belongsTo(UploadType::class, 'upload_type');
+        return $this->hasMany(User::class);
     }
-
 }
-

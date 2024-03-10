@@ -26,10 +26,6 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'username',
         'password',
-        'user_type',
-        'artist_verified_at',
-        'updated_at',
-        'is_banned',
     ];
 
     /**
@@ -56,17 +52,28 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims()
     {
         return [];
     }
 
-    public function sendVerificationEmail() {
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class, 'user_type');
+    }
+
+    public function statusType()
+    {
+        return $this->belongsTo(StatusType::class, 'status_type');
+    }
+
+    public function sendVerificationEmail()
+    {
         $minutes = 60;
         $url = URL::temporarySignedRoute(
-            'verification.verify',  
-            now()->addMinutes($minutes),  
+            'verification.verify',
+            now()->addMinutes($minutes),
             ['id' => $this->id]
         );
 

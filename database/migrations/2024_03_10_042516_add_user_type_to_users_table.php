@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('status')->default('active');
-            $table->dropColumn('is_banned');
+            $table->unsignedBigInteger('user_type')->nullable()->default(1);
+            $table->foreign('user_type')->references('id')->on('user_types')->onDelete('set null');
         });
     }
 
@@ -21,9 +21,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('your_table_name', function (Blueprint $table) {
-            $table->boolean('is_banned')->default(false);
-            $table->dropColumn('status');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('user_type');
+            $table->dropForeign(['user_type']);
         });
     }
 };

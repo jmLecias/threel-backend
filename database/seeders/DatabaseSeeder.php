@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Insert a single user into the users table
-        DB::table('users')->insert([
-            'name' => Str::random(10),
-            'email' => Str::random(10) . '@example.com',
-            'password' => Hash::make('password'),
-        ]);
+        // DB::table('users')->insert([
+        //     'name' => Str::random(10),
+        //     'email' => Str::random(10) . '@example.com',
+        //     'password' => Hash::make('password'),
+        // ]);
     }
 }
