@@ -20,15 +20,23 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('api')->group(function () {
     Route::post('/login', 'App\Http\Controllers\AuthController@login')->name('login');
     Route::post('/register', 'App\Http\Controllers\AuthController@register')->name('register');
+
+    Route::post('/uploads', 'App\Http\Controllers\UploadController@index');
+    Route::get('/thumbnail/{filename}', 'App\Http\Controllers\UploadController@showThumbnail');
+    Route::get('/content/{filename}', 'App\Http\Controllers\UploadController@showContent');
 });
 
 Route::middleware('auth.jwt')->group(function () {
     Route::post('/refresh', 'App\Http\Controllers\AuthController@refresh');
     Route::post('/me', 'App\Http\Controllers\AuthController@me');
     Route::post('/logout', 'App\Http\Controllers\AuthController@logout')->name('logout');
+
 });
 
-Route::middleware(['auth.jwt', 'artist'])->group(function () {
+Route::group([
+    'prefix' => 'artist',
+    'middleware' => ['auth.jwt', 'artist']
+], function () {
     Route::post('/upload', 'App\Http\Controllers\UploadController@store');
 });
 

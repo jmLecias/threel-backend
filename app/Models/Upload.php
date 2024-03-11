@@ -21,11 +21,17 @@ class Upload extends Model
         'content',
         'thumbnail',
         'upload_type',
+        'user_id',
     ];
 
     public function uploadType()
     {
         return $this->belongsTo(UploadType::class, 'upload_type');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

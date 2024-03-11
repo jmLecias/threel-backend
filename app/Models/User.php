@@ -68,6 +68,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(StatusType::class, 'status_type');
     }
 
+    public function uploads()
+    {
+        return $this->hasMany(Upload::class);
+    }
+
     public function sendVerificationEmail()
     {
         $minutes = 60;

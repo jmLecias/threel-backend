@@ -108,8 +108,6 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $minutes = auth()->factory()->getTTL();
-        // Print the TTL value to see how long the token is valid
-        info("Token TTL: {$minutes} minutes");
         $response = response()->json([
             'token_type' => 'bearer',
             'expires_in' => $minutes * 60,

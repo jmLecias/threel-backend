@@ -17,10 +17,10 @@ class EnsureAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user_type = auth()->user()->userType->user_type;
-        $admin_user_type = UserType::find(3)->user_type; // id: 3 = admin
+        $user_type_id = auth()->user()->user_type;
+        $admin_user_type_id = UserType::find(3)->id; // id: 3 = admin
 
-        if (auth()->check() && $user_type == $admin_user_type) {
+        if (auth()->check() && $user_type_id >= $admin_user_type_id) {
             return $next($request);
         }
 

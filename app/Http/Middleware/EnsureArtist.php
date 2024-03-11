@@ -17,10 +17,10 @@ class EnsureArtist
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        $user_type = auth()->user()->userType->user_type;
-        $artist_user_type = UserType::find(2)->user_type; // id: 2 = artist
+        $user_type_id = auth()->user()->user_type;
+        $artist_user_type_id = UserType::find(2)->id; // id: 2 = artist
 
-        if (auth()->check() && $user_type == $artist_user_type) {
+        if (auth()->check() && $user_type_id >= $artist_user_type_id) {
             return $next($request);
         }
 
