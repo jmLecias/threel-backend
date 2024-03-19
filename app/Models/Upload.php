@@ -22,11 +22,19 @@ class Upload extends Model
         'thumbnail',
         'upload_type',
         'user_id',
+        'duration',
+        'visibility',
+        'alnum_id'
     ];
 
     public function uploadType()
     {
         return $this->belongsTo(UploadType::class, 'upload_type');
+    }
+
+    public function album()
+    {
+        return $this->belongsTo(Album::class, 'album_id');
     }
 
     public function user()

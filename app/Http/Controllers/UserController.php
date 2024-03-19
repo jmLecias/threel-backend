@@ -8,12 +8,29 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserType;
 use App\Models\StatusType;
+use App\Models\Genre;
 
 class UserController extends Controller
 {
+
+    public function genres()
+    {
+        $genres = Genre::all();
+        return response()->json(['genres' => $genres], 200);
+    }
+
+    public function artists()
+    {
+        $artists = User::with(['userType', 'statusType'])
+            ->where('user_type', '>=', 2)
+            ->get();
+        return response()->json(['artists' => $artists], 200);
+    }
+
     public function users()
     {
-        $users = User::with(['userType', 'statusType'])->get();;
+        $users = User::with(['userType', 'statusType'])->get();
+        ;
         return response()->json(['users' => $users], 200);
     }
 
@@ -32,7 +49,7 @@ class UserController extends Controller
 
             return $this->users();
         } else {
-            return response()->json(['errors' => 'Admins can not deactivate user_type: '.$userType], 409);
+            return response()->json(['errors' => 'Admins can not deactivate user_type: ' . $userType], 409);
         }
     }
 
@@ -51,7 +68,7 @@ class UserController extends Controller
 
             return $this->users();
         } else {
-            return response()->json(['errors' => 'Admins can not activate user_type: '.$userType], 409);
+            return response()->json(['errors' => 'Admins can not activate user_type: ' . $userType], 409);
         }
     }
 
@@ -65,11 +82,11 @@ class UserController extends Controller
         // Admins can not update neither other admins nor the superadmin
         $userType = $user->user_type;
         if ($userType < auth()->user()->user_type) {
-            
+
 
             return $this->users();
         } else {
-            return response()->json(['errors' => 'Admins can not update user_type: '.$userType], 409);
+            return response()->json(['errors' => 'Admins can not update user_type: ' . $userType], 409);
         }
     }
 
@@ -83,18 +100,18 @@ class UserController extends Controller
         // Admins can not delete neither other admins nor the superadmin
         $userType = $user->user_type;
         if ($userType < auth()->user()->user_type) {
-            $user->delete(); 
+            $user->delete();
 
             return $this->users();
         } else {
-            return response()->json(['errors' => 'Admins can not delete user_type: '.$userType], 409);
+            return response()->json(['errors' => 'Admins can not delete user_type: ' . $userType], 409);
         }
     }
 
     public function verifyToArtist($id)
     {
         $listener = User::findOrFail($id);
-        
+
         if ($listener->userType->user_type == UserType::find(1)->user_type) { // must be a listener
             $listener->artist_verified_at = now();
             $listener->status_type = 1; // id: 1 corresponds to 'active'
@@ -102,10 +119,10 @@ class UserController extends Controller
             $listener->save();
 
             // Add a function here to send Artist Verification Request granted email
-            
+
             return $this->users();
         } else {
-            return response()->json(['errors' => 'User of type ('.$listener->userType->user_type.') can not be verified to artist!'], 409);
+            return response()->json(['errors' => 'User of type (' . $listener->userType->user_type . ') can not be verified to artist!'], 409);
         }
     }
 }
