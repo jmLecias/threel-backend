@@ -24,7 +24,7 @@ class Upload extends Model
         'user_id',
         'duration',
         'visibility',
-        'alnum_id'
+        'album_id'
     ];
 
     public function uploadType()

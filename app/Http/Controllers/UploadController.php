@@ -43,30 +43,18 @@ class UploadController extends Controller
                 'content' => 'required|file', //max is 25 mb
                 'upload_type' => 'required|integer|exists:upload_types,id',
                 'user_id' => 'required|integer|exists:users,id',
-                // 'album_id' => 'required|integer|exists:albums,id',
+                'album_id' => 'required|integer|exists:albums,id',
                 'duration' => 'required|',
                 'visibility' => 'required|integer|exists:visibility_types,id',
                 'genres' => 'required|array',
                 'genres.*.value' => 'required|integer|exists:genres,id',
             ]);
 
-            // Accessing the album object
-            // $albumName = $request->input('album.name');
-            // $albumDescription = $request->input('album.description');
-            // $albumCoverPath = $request->input('album.cover.path');
-
-            // Assuming you want to create an Album model instance with these values
-            // $album = Album::create([
-            //     'name' => $albumName,
-            //     'description' => $albumDescription,
-                // Handle the cover path as needed, e.g., store the file and save the path
-            // ]);
-
             $contentPath = $request->file('content')->store('uploads/content');
 
             $thumbnailPath = null;
             if ($request->file('thumbnail') != null) {
-                $thumbnailPath = $request->file('thumbnail')->store('uploads/thumbnails');
+                $thumbnailPath = $request->file('thumbnail')->store('uploads/cover');
             }
 
             $upload = Upload::create([
@@ -76,7 +64,7 @@ class UploadController extends Controller
                 'thumbnail' => $thumbnailPath,
                 'upload_type' => $request->input('upload_type'),
                 'user_id' => $request->input('user_id'),
-                // 'album_id' => $album->id,
+                'album_id' => $request->input('album_id'),
                 'duration' =>$request->input('duration'),
                 'visibility' =>$request->input('visibility'),
             ]);
@@ -96,18 +84,9 @@ class UploadController extends Controller
         }
     }
 
-    public function showAlbumCover($filename)
+    public function showCover($filename)
     {
-        $path = storage_path('app/uploads/album_covers/' . $filename);
-        if (File::exists($path)) {
-            return response()->file($path);
-        }
-        abort(404);
-    }
-
-    public function showThumbnail($filename)
-    {
-        $path = storage_path('app/uploads/thumbnails/' . $filename);
+        $path = storage_path('app/uploads/cover/' . $filename);
         if (File::exists($path)) {
             return response()->file($path);
         }

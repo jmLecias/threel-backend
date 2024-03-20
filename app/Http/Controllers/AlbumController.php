@@ -17,13 +17,14 @@ class AlbumController extends Controller
                 'cover' => 'required|file',
             ]);
 
-            $albumCoverPath = $request->file('cover')->store('uploads/album_covers');
+            $albumCoverPath = $request->file('cover')->store('uploads/cover');
 
 
             $album = Album::create([
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
                 'cover' => $albumCoverPath,
+                'user_id' => $request->input('user_id'),
             ]);
 
             return response()->json(['album' => $album]);

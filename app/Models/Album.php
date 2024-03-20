@@ -20,6 +20,7 @@ class Album extends Model
         'name',
         'description',
         'cover',
+        'user_id'
     ];
 
     public function uploads()

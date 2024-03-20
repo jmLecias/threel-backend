@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('uploads', function (Blueprint $table) {
-            $table->unsignedBigInteger('album_id')->nullable();
-            $table->foreign('album_id')->references('id')->on('albums')->onDelete('set null');
+            $table->string('thumbnail')->nullable()->change();
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('uploads', function (Blueprint $table) {
-            $table->dropForeign(['album_id']);
-            $table->dropColumn('album_id');
+            $table->string('thumbnail')->nullable(false)->change();
         });
     }
 };

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->unsignedBigInteger('album_id')->nullable();
-            $table->foreign('album_id')->references('id')->on('albums')->onDelete('set null');
+        Schema::table('albums', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -22,9 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->dropForeign(['album_id']);
-            $table->dropColumn('album_id');
+        Schema::table('albums', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
         });
     }
 };

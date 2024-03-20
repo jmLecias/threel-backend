@@ -24,8 +24,7 @@ Route::middleware('api')->group(function () {
     Route::post('/artists', 'App\Http\Controllers\UserController@artists');
     Route::post('/genres', 'App\Http\Controllers\UserController@genres');
     Route::post('/uploads', 'App\Http\Controllers\UploadController@index');
-    Route::get('/album/cover/{filename}', 'App\Http\Controllers\UploadController@showAlbumCover');
-    Route::get('/thumbnail/{filename}', 'App\Http\Controllers\UploadController@showThumbnail');
+    Route::get('/cover/{filename}', 'App\Http\Controllers\UploadController@showCover');
     Route::get('/content/{filename}', 'App\Http\Controllers\UploadController@showContent');
 });
 

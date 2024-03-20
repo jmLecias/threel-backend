@@ -24,8 +24,8 @@ return new class extends Migration {
     {
         Schema::table('uploads', function (Blueprint $table) {
             $table->dropColumn('duration');
-            $table->dropColumn('visibility');
             $table->dropForeign(['visibility']);
+            $table->dropColumn('visibility');
         });
     }
 };
